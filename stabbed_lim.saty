@@ -1,0 +1,38 @@
+@require: stdjabook
+@require: code
+@require: itemize
+@require: tabular
+@require: math
+@import: local
+
+document (|
+  title = {bug report};
+  author = {hsjoihs};
+  show-title = true;
+  show-toc = true;
+|) '<  
+  +display-boxes('<+p{横に長い分数を書くと左のlimが串刺しされる}>)(```
+    +pn{
+      \eqn(${
+        = 
+        \limto{h}{0} \frac{
+          \app{V}{\app{X}{t+h},\app{Y}{t+h}} 
+          + \app{V}{\app{X}{t},\app{Y}{t+h}} 
+          - \app{V}{\app{X}{t},\app{Y}{t+h}} 
+          - \app{V}{\app{X}{t},\app{Y}{t}}
+        }{h}
+      });
+    }
+    ```);
+  +pn{
+    \eqn(${
+      = 
+      \limto{h}{0} \frac{
+        \app{V}{\app{X}{t+h},\app{Y}{t+h}} 
+        + \app{V}{\app{X}{t},\app{Y}{t+h}} 
+        - \app{V}{\app{X}{t},\app{Y}{t+h}} 
+        - \app{V}{\app{X}{t},\app{Y}{t}}
+      }{h}
+    });
+  }
+>
