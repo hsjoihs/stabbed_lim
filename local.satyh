@@ -1,0 +1,246 @@
+@require: stdjabook
+@require: hdecoset
+@require: vdecoset
+@require: code
+@require: list
+@require: math
+
+let-math \substitution  = math-paren Math.empty-paren Math.bar-middle
+
+let-block ctx +centering it =
+  line-break true true ctx (inline-fil ++ read-inline ctx it ++ inline-fil)
+
+
+let-block ctx +image-frame content =
+  let pads = (10pt, 10pt, 10pt, 10pt) in
+  let decoset = VDecoSet.simple-frame-stroke 1pt Color.black in
+    block-frame-breakable ctx pads decoset (fun ctx -> read-block ctx '<+centering{#content;}>)
+
+let-inline ctx \insert-image w path =
+  let img = load-image path in
+    use-image-by-width img w
+
+let-block ctx +frame content =
+  let pads = (10pt, 10pt, 10pt, 10pt) in
+  let decoset = VDecoSet.simple-frame-stroke 1pt (Color.gray 0.75) in
+    block-frame-breakable ctx pads decoset (fun ctx -> read-block ctx content)
+
+let-inline \show-url s = embed-string s
+
+let-block ctx +display-boxes content code =
+  read-block (ctx |> set-paragraph-margin 12pt 0pt) '<+frame(content);>
+    +++ read-block (ctx |> set-paragraph-margin 0pt 12pt) '<+code(code);>
+
+let-math \sums m1 m2 =
+  ${\upper{\lower{\sum}{#m1}}{#m2}}
+
+let-math \derivfrac m3 m1 m2 = 
+  ${\frac{#m3 #m1}{#m3 #m2}}
+
+let-math \romand = ${\math-style!(MathRoman){d}}
+
+let-inline ctx \greek it =
+  let ctx-greek = ctx
+    |> set-font Latin (`TheanoOldStyle`, 1., 0.)
+    |> set-font OtherScript (`TheanoOldStyle`, 1., 0.)
+  in
+    read-inline ctx-greek it
+
+let-math \romandfrac m1 m2 =
+  ${\derivfrac{\romand}{#m1}{#m2}}
+
+let-math \dfrac m1 m2 =
+  ${\derivfrac{d}{#m1}{#m2}}
+
+let-math \rounddfrac m1 m2 =
+   ${\derivfrac{\partial}{#m1}{#m2}}
+
+let-math \rounddfrac2 m1 m2 =
+  ${\frac{\partial ^ 2 #m1}{\partial #m2 ^ 2}}
+
+let-math \dim1 = math-char MathOrd `⟦`
+let-math \dim2 = math-char MathOrd `⟧`
+
+let-math \withdim m2 m1 =
+  ${\math-style!(MathDoubleStruck){#m2} \dim1 \math-style!(MathRoman){#m1} \dim2 }
+let-math \conj z = ${#z^{\*}}
+let-math \Rwithdim m1 = ${\withdim{R}{#m1}}
+let-math \Cwithdim m1 = ${\withdim{C}{#m1}}
+let-math \R = ${\math-style!(MathDoubleStruck){R}}
+let-math \C = ${\math-style!(MathDoubleStruck){C}}
+
+
+let-math \t16 m1 =
+        ${\paren{#m1 ,16}}
+
+let-block ctx +paragraph-frame content =
+  let pads = (15pt, 15pt, 15pt, 15pt) in
+  let decoset = VDecoSet.simple-frame-stroke 1pt (Color.black) in
+    block-frame-breakable ctx pads decoset (fun ctx -> read-block (ctx |> set-hyphen-penalty 150) content)
+
+
+
+let-math \compose = math-char MathRel `∘`
+let-math \arrow = math-char MathRel `→`
+let-math \cup = math-char MathRel `∪`
+let-math \cross = math-char MathRel `⨯`
+let-math \cap = math-char MathRel `∩`
+let-math \approx = math-char MathRel `≈`
+let-math \equiv = math-char MathRel `≡`
+let-math \nequiv = math-char MathRel `≢`
+let-math \le = math-char MathRel `≤`
+let-math \in = math-char MathRel `∈`
+let-math \notin = math-char MathRel `∉`
+let-math \subset = math-char MathRel `⊆`
+let-math \leqq = math-char MathRel `≦`
+let-math \neq = math-char MathRel `≠`
+let-math \pm = math-char MathRel `±`
+let-math \ge = math-char MathRel `≥`
+let-math \normal = math-char MathRel `⊲`
+let-math \geqq = math-char MathRel `≧`
+let-math \cdot = math-char MathRel `⋅`
+let-math \nyoro = math-char MathRel `~`
+let-math \partial = math-char MathPrefix `∂`
+let-math \ordd = math-char MathPrefix `d`
+let-math \all = math-char MathPrefix `∀`
+let-math \prime = math-char MathOrd `′`
+let-math \phat = math-char MathOrd `𝑝̂`
+let-math \qhat = math-char MathOrd `𝑞̂`
+let-math \muhat = math-char MathOrd `𝜇̂`
+let-math \hat = math-char MathOrd `̂`
+let-math \Qhat = ${A \hat} % まともなのが出るまで
+let-math \xbar = math-char MathOrd `𝑥̄`
+let-math \ybar = math-char MathOrd `𝑦̄`
+let-math \hbar = math-char MathOrd `ℏ`
+let-math \bar = math-char MathOrd `̄`
+let-math \ln    = math-char MathPrefix `ln`
+let-math \sinh    = math-char MathPrefix `sinh`
+let-math \sinc    = math-char MathPrefix `sinc`
+let-math \det    = math-char MathPrefix `det`
+let-math \ceil    = math-char MathPrefix `ceil`
+let-math \cosh    = math-char MathPrefix `cosh`
+let-math \arsinh    = math-char MathPrefix `arsinh`
+let-math \perp    = math-char MathPrefix `⊥`
+let-math \exp    = math-char MathPrefix `exp`
+let-math \mg    = math-char MathPrefix `mg`
+let-math \mod    = math-char MathPrefix `mod`
+let-math \product = math-big-char MathOp `∏`
+
+let-math \prods m1 m2 =
+  ${\upper{\lower{\product}{#m1}}{#m2}}
+
+let-math \Z m1 =
+  ${\math-style!(MathDoubleStruck){Z}_{#m1}}
+
+let-inline ctx \myfbox colour it =
+  let pads = (5pt, 5pt, 5pt, 5pt) in
+  let t = 0.5pt in
+  let deco-set = HDecoSet.simple-frame-stroke t colour in
+    inline-frame-breakable pads deco-set (read-inline ctx it)
+
+let-block ctx +myfbox colour bt =
+  let pads = (5pt, 5pt, 5pt, 5pt) in
+  let t = 0.5pt in
+  let deco-set = VDecoSet.simple-frame-stroke t colour in
+    block-frame-breakable ctx pads deco-set (fun ctx -> read-block ctx bt)
+
+type position-spec = Top | Bottom
+let-inline ctx \parbox ?:specopt wid ib =
+  let blockf =
+    match specopt with
+    | None         -> embed-block-top ctx wid
+    | Some(Top)    -> embed-block-top ctx wid
+    | Some(Bottom) -> embed-block-bottom ctx wid
+  in
+    blockf (fun ctx -> read-block ctx ib)
+
+let-block +sidenote bt = '<
+  +myfbox(RGB(0. /. 255., 153. /. 255. , 51. /. 255.))<
+      #bt;
+  >
+>
+
+let-inline \todo it = {\emph{#it;}}
+
+let-inline ctx \enlarge it =
+  let size = get-font-size ctx in
+  let ctx-enlarge = set-font-size (size *' 1.5) ctx in
+    read-inline ctx-enlarge it
+
+let-block +no-proof bt = '<
+  +myfbox(Color.blue)<
+    #bt;
+    +pn{証明は読者への演習課題とする。} 
+  >
+>
+
+let single cp = string-unexplode [cp]
+let greek-uppercase cp cpb cpr cprb =
+    let s = single cp in
+    let sb = single cpb in
+    let sr = single cpr in
+    let srb = single cprb in
+      math-variant-char MathOrd (|
+        italic        = s;
+        bold-italic   = sb;
+        roman         = sr;
+        bold-roman    = srb;
+        script        = s;
+        bold-script   = sb;
+        fraktur       = s;
+        bold-fraktur  = sb;
+        double-struck = s;
+      |)
+  let greek-lowercase cp cpb =
+    let s = single cp in
+    let sb = single cpb in
+      math-variant-char MathOrd (|
+        italic        = s;
+        bold-italic   = sb;
+        roman         = s;
+        bold-roman    = sb;
+        script        = s;
+        bold-script   = sb;
+        fraktur       = s;
+        bold-fraktur  = sb;
+        double-struck = s;
+      |)
+
+let-math \Delta = greek-uppercase 0x1D6E5 0x1D71F 0x0394 0x1D6AB
+let-math \alpha = greek-lowercase 0x1D6FC 0x1D736
+let-math \beta  = greek-lowercase 0x1D6FD 0x1D737
+let-math \gamma = greek-lowercase 0x1D6FE 0x1D738
+let-math \delta = greek-lowercase 0x1D6FF 0x1D739
+let-math \lambda= greek-lowercase 0x1D706 0x1D740
+let-math \mu    = greek-lowercase 0x1D707 0x1D741
+let-math \nu    = greek-lowercase 0x1D708 0x1D742
+let-math \xi    = greek-lowercase 0x1D709 0x1D743
+let-math \omicron=greek-lowercase 0x1D70A 0x1D744
+let-math \pi    = greek-lowercase 0x1D70B 0x1D745
+let-math \rho   = greek-lowercase 0x1D70C 0x1D746
+let-math \sigma2= greek-lowercase 0x1D70D 0x1D747
+let-math \sigma = greek-lowercase 0x1D70E 0x1D748
+let-math \tau   = greek-lowercase 0x1D70F 0x1D749
+let-math \upsilon=greek-lowercase 0x1D710 0x1D74A
+let-math \phi   = greek-lowercase 0x1D711 0x1D74B
+let-math \chi   = greek-lowercase 0x1D712 0x1D74C
+let-math \psi   = greek-lowercase 0x1D713 0x1D74D
+let-math \omega = greek-lowercase 0x1D714 0x1D74E
+
+let-inline ctx \hide inner =
+    let ctx-hide =
+      ctx |> set-text-color (CMYK(0., 0., 0., 0.))
+    in
+      read-inline ctx-hide inner
+
+let-math \P m1 =
+  ${\app{P}{#m1}}
+
+let-math \condP m1 m2 =
+  ${\P{#m1 \| #m2}}
+
+let-math \limto m1 m2 =
+  ${\lower{\lim}{#m1 \to #m2}}
+
+let-math \abs m = math-paren Math.bar-middle Math.bar-middle m
+
